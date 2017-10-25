@@ -1,8 +1,6 @@
-## Welcome to GitHub Pages
+## Welcome to my Vagrant Pages
 
-You can use the [editor on GitHub](https://github.com/distortenterprises/vagrant/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Vagrant is an open-source software product for building and maintaining portable virtual software development environments, e.g. for VirtualBox, Hyper-V, Docker, VMware, and AWS.
 
 ### Markdown
 
