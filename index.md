@@ -4,6 +4,7 @@ Vagrant is an open-source software product for building and maintaining portable
 
 Vagrant builds virtual images from references (boxes) of a type of operating system with applications and dependent software, this can be referenced in a template file that is given to users on a group project to ensure that their development environment is the same as everybody elses as it is using the same virtual image. Sort of like making sure everyone is singing from the same hymn book.It is also great for checking a development that is built on a different environment to which it is being deployed, so you can set up the target environment in a virtual instance to test.
 
+## Vagrant Install
 Download the latest Vagrant installer, for macOS there is a point and click .dmg installer.
 
 Expand the .dmg and install the Vagrant.pkg package file. The binary gets installed in the Applications folder with a link to the /usr/bin so it is added to the shell path.
