@@ -2,34 +2,44 @@
 
 Vagrant is an open-source software product for building and maintaining portable virtual software development environments, e.g. for VirtualBox, Hyper-V, Docker, VMware, and AWS.
 
-### Markdown
+Vagrant builds virtual images from references (boxes) of a type of operating system with applications and dependent software, this can be referenced in a template file that is given to users on a group project to ensure that their development environment is the same as everybody elses as it is using the same virtual image. Sort of like making sure everyone is singing from the same hymn book.It is also great for checking a development that is built on a different environment to which it is being deployed, so you can set up the target environment in a virtual instance to test.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Download the latest Vagrant installer, for macOS there is a point and click .dmg installer.
 
-```markdown
-Syntax highlighted code block
+Expand the .dmg and install the Vagrant.pkg package file. The binary gets installed in the Applications folder with a link to the /usr/bin so it is added to the shell path.
 
-# Header 1
-## Header 2
-### Header 3
+The user data for Vagrant is filed in the directory from which vagrant was used and is stored in an invisible directory named .vagrant.d
 
-- Bulleted
-- List
+You can check the version of vagrant you have by typing:`vagrant -v`
 
-1. Numbered
-2. List
+If you want to upgrade to a later version just download the latest installer and drag and drop the uninstall.tool onto an open Terminal window and follow the process, then install the Vagrant.pkg file or simply just install the new version over the top of the older one  e.g 1.9.4 -> 2.0.0
 
-**Bold** and _Italic_ and `Code` text
+Along with Vagrant you need to use a VM solution to store the image or box, some solutions include VMWare and AWS but Virtual Box is a free and popular solution. This needs to be downloaded and installed on your local machine.
 
-[Link](url) and ![Image](src)
-```
+Change directory to where you want to store the Vagrant project and run`vagrant init`
+This will place a set up file named Vagrantfile in that top level. After the Vagrantfile has been created the next step is to pull the image or box that will be used.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+You can see a bunch of Vagrant boxes on the Vagrant Cloud website that you can download and use.
 
-### Jekyll Themes
+To add a box using one of the examples:
+`vagrant box add chef/centos-6.5`
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/distortenterprises/vagrant/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+This will download the Centos 6.5 box to the current directory, if asked select the relevant VM solution such as Virtual Box. The original box is always left intact and can be used across multiple projects, the Vagrant image built is based from the box.
 
-### Support or Contact
+After the box has downloaded we need to tell Vagrant which box to use in the current project, this is done in the Vagrantfile created earlier, using you preferred Terminal editor:`nano Vagrantfile`
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Find and change```# Every Vagrant virtual environment requires a box to build off of.  config.vm.box = "base"```
+
+To the box name, so in this example:```# Every Vagrant virtual environment requires a box to build off of.  config.vm.box = "chef/centos-6.5"```
+
+The next step is to boot the box up which is done with the most popular vagrant command:```vagrant up```
+Which will run through a series of start up steps
+
+To actually connect to the box use ssh and you will be in the home of the VM box
+`vagrant ssh`
+
+Whilst in your Vagrant box your starting directory point is /home/vagrant – it is the vagrant directory at the root /vagrant which shares the same content as your initial project directory. This is a key thing, it essentially mirrors the 2 directories so the content in your project folder will also be in the /vagrant directory on the Vagrant Box.
+
+## Install Apache Web Server
+
+Create a bootup script that will upgrade the OS and install Apache when the Vagrant box is booted up, so still in your initial project directory on macOS or in /vagrant on the Vagrant Box. You need to create a script and also edit the VagrantFile to include the script, if you use the Vagrant Box to edit the file you’ll need to use vi or nano , but install it first.
