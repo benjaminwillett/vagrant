@@ -43,6 +43,20 @@ Whilst in your Vagrant box your starting directory point is `/home/vagrant` – 
 
 When you are done fiddling around with the machine, run `vagrant destroy` back on your host machine, and Vagrant will terminate the use of any resources by the virtual machine.The vagrant destroy command does not actually remove the downloaded box file. To completely remove the box file, you can use the `vagrant box remove` command.
 
+`vagrant@precise64:~$ ls /vagrantVagrantfile`
+
+Believe it or not, that Vagrantfile you see inside the virtual machine is actually the same Vagrantfile that is on your actual host machine. Go ahead and touch a file to prove it to yourself:
+
+`vagrant@precise64:~$ touch /vagrant/foo`
+
+`vagrant@precise64:~$ exit`
+
+`$ ls`
+
+`foo Vagrantfile`
+
+Whoa! "foo" is now on your host machine. As you can see, Vagrant kept the folders in sync.
+With synced folders, you can continue to use your own editor on your host machine and have the files sync into the guest machine.
 
 ## Install Apache Web Server
 
