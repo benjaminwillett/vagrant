@@ -39,8 +39,11 @@ Which will run through a series of start up steps
 To actually connect to the box use ssh and you will be in the home of the VM box
 `vagrant ssh`
 
-Whilst in your Vagrant box your starting directory point is /home/vagrant – it is the vagrant directory at the root /vagrant which shares the same content as your initial project directory. This is a key thing, it essentially mirrors the 2 directories so the content in your project folder will also be in the /vagrant directory on the Vagrant Box.
+Whilst in your Vagrant box your starting directory point is `/home/vagrant` – it is the vagrant directory at the root `/vagrant` which shares the same content as your initial project directory. This is a key thing, it essentially mirrors the 2 directories so the content in your project folder will also be in the `/vagrant` directory on the Vagrant Box.
+
+When you are done fiddling around with the machine, run `vagrant destroy` back on your host machine, and Vagrant will terminate the use of any resources by the virtual machine.The vagrant destroy command does not actually remove the downloaded box file. To completely remove the box file, you can use the `vagrant box remove` command.
+
 
 ## Install Apache Web Server
 
-Create a bootup script that will upgrade the OS and install Apache when the Vagrant box is booted up, so still in your initial project directory on macOS or in /vagrant on the Vagrant Box. You need to create a script and also edit the VagrantFile to include the script, if you use the Vagrant Box to edit the file you’ll need to use vi or nano , but install it first.
+Create a bootup script that will upgrade the OS and install Apache when the Vagrant box is booted up, so still in your initial project directory on macOS or in `/vagrant` on the Vagrant Box. You need to create a script and also edit the VagrantFile to include the script, if you use the Vagrant Box to edit the file you’ll need to use vi or nano , but install it first.
