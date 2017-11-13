@@ -36,18 +36,7 @@ To the box name, so in this example:```# Every Vagrant virtual environment requi
 The next step is to boot the box up which is done with the most popular vagrant command:```vagrant up```
 Which will run through a series of start up steps
 
-To actually connect to the box use ssh and you will be in the home of the VM box
-`vagrant ssh`
-
-Whilst in your Vagrant box your starting directory point is `/home/vagrant` – it is the vagrant directory at the root `/vagrant` which shares the same content as your initial project directory. This is a key thing, it essentially mirrors the 2 directories so the content in your project folder will also be in the `/vagrant` directory on the Vagrant Box.
-
-When you are done fiddling around with the machine, run `vagrant destroy` back on your host machine, and Vagrant will terminate the use of any resources by the virtual machine.The vagrant destroy command does not actually remove the downloaded box file. To completely remove the box file, you can use the `vagrant box remove` command.
-
-`vagrant@precise64:~$ ls /vagrantVagrantfile`
-
-Believe it or not, that Vagrantfile you see inside the virtual machine is actually the same Vagrantfile that is on your actual host machine. Go ahead and touch a file to prove it to yourself:
-
-`vagrant@precise64:~$ touch /vagrant/foo`
+To actually conn`vagrant@precise64:~$ touch /vagrant/foo`
 
 `vagrant@precise64:~$ exit`
 
@@ -60,4 +49,56 @@ With synced folders, you can continue to use your own editor on your host machin
 
 ## Install Apache Web Server
 
-Create a bootup script that will upgrade the OS and install Apache when the Vagrant box is booted up, so still in your initial project directory on macOS or in `/vagrant` on the Vagrant Box. You need to create a script and also edit the VagrantFile to include the script, if you use the Vagrant Box to edit the file you’ll need to use vi or nano , but install it first.
+### Provisioning 
+Alright, so we have a virtual machine running a basic copy of Ubuntu and we can edit files from our machine and have them synced into the virtual machine. Let us now serve those files using a webserver.
+
+We could just SSH in and install a webserver and be on our way, but then every person who used Vagrant would have to do the same thing. Instead, Vagrant has built-in support for automated provisioning. Using this feature, Vagrant will automatically install software when you `vagrant up` so that the guest machine can be repeatably created and ready-to-use.
+
+#### Installing Apache 
+We will just setup Apache for our basic project, and we will do so using a shell script. Create the following shell script and save it as `bootstrap.sh` in the same directory as your Vagrantfile:
+
+```
+#!/usr/bin/env bash
+apt-get update
+apt-get install -y apache2
+  if ! [ -L /var/www ]; then  
+  rm -rf /var/www  
+  ln -fs /vagrant /var/www
+  fi
+  ```
+  
+Next, we configure Vagrant to run this shell script when setting up our machine. We do this by editing the Vagrantfile, which should now look like this:
+
+Next, we configure Vagrant to run this shell script when setting up our machine. We do this by editing the Vagrantfile, which should now look like this:
+
+```
+Vagrant.configure("2") do |config|  
+config.vm.box = "hashicorp/precise64"  
+config.vm.provision :shell, path: "bootstrap.sh"
+end
+```
+
+The "provision" line is new, and tells Vagrant to use the shell provisioner to setup the machine, with the `bootstrap.sh` file. The file path is relative to the location of the project root (where the Vagrantfile is).
+
+#### Provision! 
+After everything is configured, just run `vagrant up` to create your machine and Vagrant will automatically provision it. You should see the output from the shell script appear in your terminal. If the guest machine is already running from a previous step, run `vagrant reload --provision`, which will quickly restart your virtual machine, skipping the initial import step. The provision flag on the reload command instructs Vagrant to run the provisioners, since usually Vagrant will only do this on the first `vagrant up`.
+After Vagrant completes running, the web server will be up and running. You cannot see the website from your own browser (yet), but you can verify that the provisioning works by loading a file from SSH within the machine:
+
+```
+$ vagrant ssh
+...
+vagrant@precise64:~$ wget -qO- 127.0.0.1
+```
+
+This works because in the shell script above we installed Apache and setup the default DocumentRoot of Apache to point to our `/vagrant` directory, which is the default synced folder setup by Vagrant.
+ect to the box use ssh and you will be in the home of the VM box
+`vagrant ssh`
+
+Whilst in your Vagrant box your starting directory point is `/home/vagrant` – it is the vagrant directory at the root `/vagrant` which shares the same content as your initial project directory. This is a key thing, it essentially mirrors the 2 directories so the content in your project folder will also be in the `/vagrant` directory on the Vagrant Box.
+
+When you are done fiddling around with the machine, run `vagrant destroy` back on your host machine, and Vagrant will terminate the use of any resources by the virtual machine.The vagrant destroy command does not actually remove the downloaded box file. To completely remove the box file, you can use the `vagrant box remove` command.
+
+`vagrant@precise64:~$ ls /vagrantVagrantfile`
+
+Believe it or not, that Vagrantfile you see inside the virtual machine is actually the same Vagrantfile that is on your actual host machine. Go ahead and touch a file to prove it to yourself:
+
